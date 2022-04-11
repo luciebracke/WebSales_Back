@@ -1,6 +1,6 @@
 const {User} = require('../models/user-schema');
 
-getAllUsers = (req, res) => {
+get_all_users = (req, res) => {
     User.find({}, (err, users) => {
         if (err) {
             res.send(err);
@@ -9,7 +9,7 @@ getAllUsers = (req, res) => {
     });
 };
 
-createUser = (req, res) => {
+create_user = (req, res) => {
     const user = new User(
         {
             email: req.body.email,
@@ -28,7 +28,7 @@ createUser = (req, res) => {
     });
 }
 
-modifyUser = (req, res) => {
+modify_user = (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, user) => {
         if (err) {
             res.status(500).send(err);
@@ -38,7 +38,7 @@ modifyUser = (req, res) => {
     });
 }
 
-deleteUser = (req, res) => {
+delete_user = (req, res) => {
     User.findByIdAndRemove(req.params.id, (err, user) => {
         if (err) {
             res.status(500).send(err);
@@ -49,8 +49,8 @@ deleteUser = (req, res) => {
 }
 
 module.exports = {
-    getAllUsers,
-    createUser,
-    modifyUser, 
-    deleteUser
+    get_all_users,
+    create_user,
+    modify_user, 
+    delete_user
 };
