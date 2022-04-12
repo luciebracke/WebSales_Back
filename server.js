@@ -7,6 +7,10 @@ const bodyParser = require('body-parser');
 const userRoute = require('./routes/user-route');
 const productRoute = require('./routes/product-route');
 
+let corsOptions = {
+    origin: 'http://localhost:3000',
+};
+
 connectDB();
 
 const app = express();
@@ -19,6 +23,7 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`));
 
+app.use(cors(corsOptions));
 //A absolument ajouter si on veut lire les données de type JSON
 app.use(express.json());
 

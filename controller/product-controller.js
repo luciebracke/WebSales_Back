@@ -4,10 +4,20 @@ const {User} = require('../models/user-schema');
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
         if (err) {
-            res.send(err);
+            res.send(err + 'test to see if this is working');
         }
         res.send(products);
     });
+};
+
+get_products_per_user = (req, res) => {
+  Product.find({seller_id: req.params.id}, (err, products) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(products);
+    }
+    );
 };
 
 create_product = (req, res) => {
@@ -29,6 +39,15 @@ create_product = (req, res) => {
         } else {
             res.status(201).send(`${product} with id ${product._id} has been created successfully`);
         }
+    });
+};
+
+get_product_by_id = (req, res) => {
+    Product.findById(req.params.id, (err, product) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(product);
     });
 };
 
@@ -54,7 +73,9 @@ delete_product = (req, res) => {
 
 module.exports = {
     get_all_products,
+    get_products_per_user,
     create_product,
+    get_product_by_id,
     modify_product,
     delete_product
 };
