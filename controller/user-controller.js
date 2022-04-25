@@ -16,11 +16,8 @@ create_user = (req, res) => {
     .then(hash => {
     const user = new User(
         {
-            email: req.body.email,
-            password: hash,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            admin: req.body.admin
+            // more about the ... on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+            ...req.body
         }
         );
     user.save((err, user) => {

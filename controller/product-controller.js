@@ -1,5 +1,7 @@
+require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
+const jwt = require('jsonwebtoken');
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
@@ -21,23 +23,21 @@ get_products_per_user = (req, res) => {
 };
 
 create_product = (req, res) => {
+
+    const seller_id = get_user_id_from_token(req, res);
+
     const product = new Product(
         {
-            seller_id: req.body.seller_id,
-            title: req.body.title,
-            //picture: req.body.picture,
-            description: req.body.description,
-            base_price: req.body.base_price,
-            beginning_of_the_auction: req.body.beginning_of_the_auction,
-            end_of_the_auction: req.body.end_of_the_auction,
-            bidders: req.body.bidders
+            seller_id: seller_id,
+            ...req.body
+            //picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         }
         );
     product.save((err, product) => {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.status(201).send(`${product} with id ${product._id} has been created successfully`);
+            res.status(201).send(`${product} with seller_id ${seller_id} has been created successfully`);
         }
     });
 };
@@ -61,6 +61,36 @@ modify_product = (req, res) => {
     });
 };
 
+add_bidders_to_product = (req, res) => {
+    
+    const bidder_id = get_user_id_from_token(req, res);
+    let user = User.findById(bidder_id);
+    const bidder_first_name = user.first_name;
+    const bidder_last_name = user.lastName;
+
+    console.log(user);
+    console.log(bidder_first_name);
+    console.log(bidder_last_name);
+
+    Product.findByIdAndUpdate(
+        req.params.id, 
+        {$push: {
+            bidders: 
+            {
+             bidder_id: bidder_id,
+             bidder_first_name: bidder_first_name,
+             bidder_last_name: bidder_last_name,
+             bidder_bid_amount: req.body.bidder_bid_amount}}}, 
+        {new: true}, 
+        (err, product) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.status(200).send(`${product}, ${user} with id ${product._id} has been modified successfully`);
+        }
+    });
+};
+
 delete_product = (req, res) => {
    Product.findByIdAndRemove(req.params.id, (err, product) => {
         if (err) {
@@ -71,11 +101,22 @@ delete_product = (req, res) => {
     });
 };
 
+get_user_id_from_token = (req, res) => {
+
+    const authToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(authToken, 'RANDOM_TOKEN_SECRET');
+    const userId = decodedToken.userId;
+    const userIdInToken = userId.toString();
+    
+    return userIdInToken;
+};
+
 module.exports = {
     get_all_products,
     get_products_per_user,
     create_product,
     get_product_by_id,
     modify_product,
+    add_bidders_to_product,
     delete_product
 };
