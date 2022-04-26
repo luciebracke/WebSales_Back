@@ -2,7 +2,7 @@ require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
-const { default: async } = require('async');
+// const { default: async } = require('async');
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
