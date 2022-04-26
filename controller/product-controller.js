@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
+        
         if (err) {
             res.send(err + 'test to see if this is working');
         }
@@ -72,7 +73,7 @@ add_bidders_to_product = async (req, res) => {
 
     Product.findByIdAndUpdate(
         req.params.id, 
-        {bidders: {$ne: bidder_id}},
+        {"bidders.bidders_id": {$ne: bidder_id}},
         {$push: {
             bidders: 
             {
