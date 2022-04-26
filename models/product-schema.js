@@ -13,7 +13,7 @@ const ProductSchema = new mongoose.Schema({
     picture: {type: String, /* required: true */},
     description: {type: String, required: true},
     base_price: {
-        type: mongoose.Decimal128,
+        type: Number,
         max: [10000, 'Base price must be less than 10000']
     },
     beginning_of_the_auction: {type: Date, required: true},

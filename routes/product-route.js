@@ -7,7 +7,7 @@ const authentification = require('../middleware/authenticate-middleware');
 const multer = require('../middleware/multer-middleware');
 
 router
-.get('/', authentification, productController.get_all_products)
+.get('/', productController.get_all_products)
 .get('/:id', authentification, productController.get_products_per_user)
 .post('/', authentification, multer,  productController.create_product)
 .patch('/:id', authentification, productController.modify_product)

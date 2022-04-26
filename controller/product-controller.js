@@ -2,6 +2,7 @@ require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
+const { default: async } = require('async');
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
@@ -61,16 +62,10 @@ modify_product = (req, res) => {
     });
 };
 
-add_bidders_to_product = (req, res) => {
+add_bidders_to_product = async (req, res) => {
     
     const bidder_id = get_user_id_from_token(req, res);
-    let user = User.findById(bidder_id);
-    const bidder_first_name = user.first_name;
-    const bidder_last_name = user.lastName;
-
-    console.log(user);
-    console.log(bidder_first_name);
-    console.log(bidder_last_name);
+    let user = await User.findById(bidder_id);
 
     Product.findByIdAndUpdate(
         req.params.id, 
@@ -78,15 +73,16 @@ add_bidders_to_product = (req, res) => {
             bidders: 
             {
              bidder_id: bidder_id,
-             bidder_first_name: bidder_first_name,
-             bidder_last_name: bidder_last_name,
+             bidder_first_name: user.firstName,
+             bidder_last_name: user.lastName,
              bidder_bid_amount: req.body.bidder_bid_amount}}}, 
-        {new: true}, 
+        {fields: {bidders: 1}, 
+        new: true},
         (err, product) => {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).send(`${product}, ${user} with id ${product._id} has been modified successfully`);
+            res.status(200).send(`${product}, with ${product.title} and id ${product._id} has been modified successfully`);
         }
     });
 };
