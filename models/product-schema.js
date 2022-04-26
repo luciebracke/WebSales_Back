@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ProductSchema = new mongoose.Schema({
 
@@ -21,7 +22,7 @@ const ProductSchema = new mongoose.Schema({
     bidders: 
     [
         {
-        bidder_id: {type: mongoose.Types.ObjectId, ref: 'User'},
+        bidder_id: {type: mongoose.Types.ObjectId, ref: 'User', unique: true},
         bidder_first_name: {type: String, required: true, ref: 'User'},
         bidder_last_name: {type: String, required: true, ref: 'User'},
         bidder_bid_amount: {type: Number, required: true},
@@ -31,4 +32,6 @@ const ProductSchema = new mongoose.Schema({
 );
 
 const Product = mongoose.model('Product', ProductSchema);
+ProductSchema.plugin(uniqueValidator);
+
 module.exports = {Product};

@@ -65,7 +65,6 @@ user_login = (req, res, next) => {
               return res.status(401).send({ error: 'Incorrect password!' });
             }
             res.status(200).send({
-                userId: user._id,
                 token: jwt.sign(
                   { userId: user._id },
                   'RANDOM_TOKEN_SECRET',

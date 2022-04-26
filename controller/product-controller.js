@@ -2,7 +2,6 @@ require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
-const { default: async } = require('async');
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
@@ -76,7 +75,7 @@ add_bidders_to_product = async (req, res) => {
              bidder_first_name: user.firstName,
              bidder_last_name: user.lastName,
              bidder_bid_amount: req.body.bidder_bid_amount}}}, 
-        {fields: {bidders: 1}, 
+        {fields: {bidders: 1, title: 1}, 
         new: true},
         (err, product) => {
         if (err) {
