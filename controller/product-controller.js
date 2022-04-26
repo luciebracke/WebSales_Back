@@ -22,12 +22,16 @@ get_products_per_user = (req, res) => {
     );
 };
 
-create_product = (req, res) => {
+create_product = async (req, res) => {
 
     const seller_id = get_user_id_from_token(req, res);
 
+    let user = await User.findById(seller_id);
+
     const product = new Product(
         {
+            seller_first_name: user.firstName,
+            seller_last_name: user.lastName,
             seller_id: seller_id,
             ...req.body
             //picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -68,17 +72,21 @@ add_bidders_to_product = async (req, res) => {
 
     Product.findByIdAndUpdate(
         req.params.id, 
+        {bidders: {$ne: bidder_id}},
         {$push: {
             bidders: 
             {
              bidder_id: bidder_id,
              bidder_first_name: user.firstName,
              bidder_last_name: user.lastName,
-             bidder_bid_amount: req.body.bidder_bid_amount}}}, 
+             bidder_bid_amount: req.body.bidder_bid_amount
+            }}
+        }, 
         {fields: {bidders: 1, title: 1}, 
-        new: true},
+          new: true},
         (err, product) => {
-        if (err) {
+        
+            if (err) {
             res.status(500).send(err);
         } else {
             res.status(200).send(`${product}, with ${product.title} and id ${product._id} has been modified successfully`);

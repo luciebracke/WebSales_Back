@@ -22,11 +22,12 @@ const ProductSchema = new mongoose.Schema({
     bidders: 
     [
         {
-        bidder_id: {type: mongoose.Types.ObjectId, ref: 'User', unique: true},
+        bidder_id: {type: mongoose.Types.ObjectId, ref: 'User'},
         bidder_first_name: {type: String, required: true, ref: 'User'},
         bidder_last_name: {type: String, required: true, ref: 'User'},
         bidder_bid_amount: {type: Number, required: true},
-        }
+        _id: false
+        },
     ],
 },
 );
