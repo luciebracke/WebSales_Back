@@ -11,15 +11,46 @@ get_all_users = (req, res) => {
     });
 };
 
-create_user = (req, res) => {
-    bcrypt.hash(req.body.password, 10)
-    .then(hash => {
+create_user = async (req, res) => {
+    try {
+
+        // sets what's is expected to be in the body of the request
+        const {firstName, lastName, email, password, passwordCheck} = req.body;
+
+        if (!firstName || !lastName || !email || !password || !passwordCheck) {
+            return res.status(400).send({ error: 'All fields are required!' });
+        }
+
+        //checks if password has the correct length
+        if (password < 6) {
+            return res.status(400).send({ error: 'Password must be at least 6 characters!' });
+        }
+
+        //checks if password and passwordCheck match in the body of the request
+        if (password !== passwordCheck) {
+            return res.status(400).send({ error: 'Passwords do not match!' });
+        }
+
+        //checks if email is already in use in the database
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).send({ error: 'Email is already used by another acount!' });
+        }
+
+        //hashes the password
+        //hash algorithms always produce the same result for a specific password, the genSalt adds security by adding randomness to the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+   
     const user = new User(
         {
             // more about the ... on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+            password: hashedPassword,
             ...req.body
         }
         );
+
+        //saves the user in the database
     user.save((err, user) => {
         if (err) {
             res.status(500).send(err);
@@ -27,7 +58,9 @@ create_user = (req, res) => {
             res.status(201).send(`${user} with id ${user._id} has been created successfully`);
         }
     });
-});
+} catch (error) {
+    res.status(500).send(error);
+} 
 };
 
 modify_user = (req, res) => {

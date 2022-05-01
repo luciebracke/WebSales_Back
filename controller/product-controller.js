@@ -2,10 +2,11 @@ require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
+const ObjectId = require('mongodb').ObjectId;
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
-        
+
         if (err) {
             res.send(err + 'test to see if this is working');
         }
@@ -70,10 +71,9 @@ add_bidders_to_product = async (req, res) => {
     
     const bidder_id = get_user_id_from_token(req, res);
     let user = await User.findById(bidder_id);
-
+    
     Product.findByIdAndUpdate(
         req.params.id, 
-        {"bidders.bidders_id": {$ne: bidder_id}},
         {$push: {
             bidders: 
             {
@@ -86,8 +86,7 @@ add_bidders_to_product = async (req, res) => {
         {fields: {bidders: 1, title: 1}, 
           new: true},
         (err, product) => {
-        
-            if (err) {
+           if (err) {
             res.status(500).send(err);
         } else {
             res.status(200).send(`${product}, with ${product.title} and id ${product._id} has been modified successfully`);
