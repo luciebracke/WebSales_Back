@@ -53,19 +53,15 @@ create_product = async (req, res) => {
 
     let user = await User.findById(seller_id);
 
-    // const picture = `${req.protocol}://${req.get('host')}/images/${req.file}`
-
     const product = new Product(
         {
+            ...req.body,
             seller_first_name: user.firstName,
             seller_last_name: user.lastName,
             seller_id: seller_id,
-            ...req.body,
-            picture: req.file.path 
         }
         );
 
-        console.log(req.file.filename)
     product.save((err, product) => {
         if (err) {
             res.status(500).send(err);
