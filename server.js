@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 
 //A absolument ajouter si on veut lire les données de type JSON
 app.use(express.json());
-app.use(express.bodyParser({limit: '50mb'}));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Routes
