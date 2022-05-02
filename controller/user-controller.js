@@ -46,6 +46,7 @@ create_user = async (req, res) => {
         {
             // more about the ... on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
             password: hashedPassword,
+            admin: false,
             ...req.body
         }
         );
