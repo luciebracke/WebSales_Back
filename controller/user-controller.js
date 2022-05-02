@@ -39,15 +39,16 @@ create_user = async (req, res) => {
 
         //hashes the password
         //hash algorithms always produce the same result for a specific password, the genSalt adds security by creating randomness to the password
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
    
     const user = new User(
         {
             // more about the ... on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+            ...req.body,
             password: hashedPassword,
             admin: false,
-            ...req.body
+            
         }
         );
 
