@@ -8,7 +8,7 @@ const MIME_TYPES = {
   'image/png': 'png'
 };
 
-// The folder where the pictures will be stored, images
+// The folder where the pictures will be stored, the folder named "images"
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, 'images');
@@ -22,4 +22,5 @@ const storage = multer.diskStorage({
   }
 });
 
-module.exports = multer({storage: storage}).single('image');
+// The single method indicates that only one file can be uploaded at a time
+module.exports = multer({storage: storage}).single('picture');

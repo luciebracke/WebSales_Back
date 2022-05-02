@@ -11,7 +11,6 @@ const ProductSchema = new mongoose.Schema({
         required: true,
         maxlength: [20, 'Title must be less than 20 characters']
     },
-    picture: {type: String, /* required: true */},
     description: {type: String, required: true},
     base_price: {
         type: Number,
@@ -29,6 +28,7 @@ const ProductSchema = new mongoose.Schema({
         _id: false
         },
     ],
+    picture: {type: String, required: true},
 },
 );
 

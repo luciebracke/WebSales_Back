@@ -9,7 +9,8 @@ const multer = require('../middleware/multer-middleware');
 router
 .get('/', productController.get_all_products)
 .get('/:id', productController.get_products_per_user)
-.post('/', authentification, multer,  productController.create_product)
+.get('/products-user-bid-on/:id', productController.get_products_user_bid_on)
+.post('/', authentification, multer, productController.create_product)
 .patch('/:id', authentification, productController.modify_product)
 .patch('/bids/:id', authentification, productController.add_bidders_to_product)
 .delete('/:id', authentification, productController.delete_product);

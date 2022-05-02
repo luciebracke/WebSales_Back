@@ -2,7 +2,7 @@ require('../middleware/authenticate-middleware');
 const {Product} = require('../models/product-schema');
 const {User} = require('../models/user-schema');
 const jwt = require('jsonwebtoken');
-const ObjectId = require('mongodb').ObjectId;
+
 
 get_all_products = (req, res) => {
     Product.find({}, (err, products) => {
@@ -24,28 +24,18 @@ get_products_per_user = (req, res) => {
     );
 };
 
-create_product = async (req, res) => {
-
-    const seller_id = get_user_id_from_token(req, res);
-
-    let user = await User.findById(seller_id);
-
-    const product = new Product(
-        {
-            seller_first_name: user.firstName,
-            seller_last_name: user.lastName,
-            seller_id: seller_id,
-            ...req.body
-            //picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+get_products_user_bid_on = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found!' });
         }
-        );
-    product.save((err, product) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.status(201).send(`${product} with seller_id ${seller_id} has been created successfully`);
-        }
-    });
+        
+        const bidProducts = await Product.find({"bidders.bidder_id": req.params.id});
+        res.send(bidProducts);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 };
 
 get_product_by_id = (req, res) => {
@@ -56,6 +46,35 @@ get_product_by_id = (req, res) => {
         res.send(product);
     });
 };
+
+create_product = async (req, res) => {
+    
+    const seller_id = get_user_id_from_token(req, res);
+
+    let user = await User.findById(seller_id);
+
+    // const picture = `${req.protocol}://${req.get('host')}/images/${req.file}`
+
+    const product = new Product(
+        {
+            seller_first_name: user.firstName,
+            seller_last_name: user.lastName,
+            seller_id: seller_id,
+            ...req.body,
+            picture: req.file.path 
+        }
+        );
+
+        console.log(req.file.filename)
+    product.save((err, product) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.status(201).send(`${product} with seller_id ${seller_id} has been created successfully`);
+        }
+    });
+};
+
 
 modify_product = (req, res) => {
   Product.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, product) => {
@@ -117,8 +136,9 @@ get_user_id_from_token = (req, res) => {
 module.exports = {
     get_all_products,
     get_products_per_user,
-    create_product,
+    get_products_user_bid_on,
     get_product_by_id,
+    create_product,
     modify_product,
     add_bidders_to_product,
     delete_product

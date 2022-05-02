@@ -14,7 +14,7 @@ get_all_users = (req, res) => {
 create_user = async (req, res) => {
     try {
 
-        // sets what's is expected to be in the body of the request
+        //What's expected to be in the body of the request
         const {firstName, lastName, email, password, passwordCheck} = req.body;
 
         if (!firstName || !lastName || !email || !password || !passwordCheck) {
@@ -38,7 +38,7 @@ create_user = async (req, res) => {
         }
 
         //hashes the password
-        //hash algorithms always produce the same result for a specific password, the genSalt adds security by adding randomness to the password
+        //hash algorithms always produce the same result for a specific password, the genSalt adds security by creating randomness to the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
    
@@ -64,8 +64,13 @@ create_user = async (req, res) => {
 };
 
 modify_user = (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, user) => {
-        if (err) {
+    User.findByIdAndUpdate(
+        req.params.id, 
+        req.body, 
+        {new: true}, 
+        (err, user) => {
+        
+            if (err) {
             res.status(500).send(err);
         } else {
             res.status(200).send(`${user} with id ${user._id} has been modified successfully`);
