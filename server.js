@@ -25,7 +25,7 @@ const port = process.env.PORT || 3000;
 app.use(cors(corsOptions));
 
 //A absolument ajouter si on veut lire les données de type JSON
-// app.use(express.json());
+// app.use(express.json()); in this case, it was not adapted to the image format
 
 app.use(bodyParser.json({limit: '50mb', extended: true, type: 'application/json'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
