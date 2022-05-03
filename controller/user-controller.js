@@ -76,7 +76,7 @@ modify_user = (req, res) => {
             if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).send(`User with id ${user._id} has been modified successfully`);
+            res.status(200).send();
         }
     });
 }
