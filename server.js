@@ -22,19 +22,19 @@ if(process.env.NODE_ENV === 'development'){
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`));
-
 app.use(cors(corsOptions));
 
 //A absolument ajouter si on veut lire les données de type JSON
-app.use(express.json());
+// app.use(express.json());
 
-app.use(bodyParser.json({limit: '10mb', extended: true}))
-app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
-app.use(bodyParser.text({limit: '10mb'}))
+app.use(bodyParser.json({limit: '50mb', extended: true, type: 'application/json'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
+app.use(bodyParser.text({limit: '50mb'}))
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Routes
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
+
+app.listen(port, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${port}`));
