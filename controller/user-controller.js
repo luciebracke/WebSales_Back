@@ -106,7 +106,10 @@ user_login = (req, res, next) => {
             }
             res.status(200).send({
                 token: jwt.sign(
-                  { userId: user._id },
+                  { 
+                    userId: user._id, 
+                    isAdmin: user.admin
+                  },
                   'RANDOM_TOKEN_SECRET',
                   { expiresIn: '24h' }
                 )
