@@ -66,6 +66,7 @@ create_user = async (req, res) => {
 };
 
 modify_user = (req, res) => {
+
     User.findByIdAndUpdate(
         req.params.id, 
         req.body, 
@@ -75,7 +76,7 @@ modify_user = (req, res) => {
             if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).send(`user with id ${user._id} has been modified successfully`);
+            res.status(200).send();
         }
     });
 }
