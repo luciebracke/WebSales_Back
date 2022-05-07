@@ -55,7 +55,7 @@ create_user = async (req, res) => {
         //saves the user in the database
     user.save((err, user) => {
         if (err) {
-            res.status(500).send(err);
+            res.status(401).send(err);
         } else {
             res.status(201).send(`$user with id ${user._id} has been created successfully`);
         }
